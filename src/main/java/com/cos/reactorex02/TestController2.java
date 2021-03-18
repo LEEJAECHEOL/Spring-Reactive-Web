@@ -4,6 +4,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import reactor.core.publisher.EmitterProcessor;
@@ -32,9 +33,15 @@ public class TestController2 {
 	}
 	
 	
-	@GetMapping("/send")
+	@GetMapping("/send") // 이거를 실행하면 /sse가 작동함 구독하고 있는 사람한테 다 보냄.
 	public void send() {
 		sink.tryEmitNext("Hello World");
+	}
+	
+	// 다보내고 room을 검사해서 내꺼 인것만 가져와서 읽으면 됨. 데이터를 받은 사람은 파싱해서 해서 내꺼인지 아닌지 확인 해야댐.
+	@GetMapping("/send/{room") 
+	public void send(@PathVariable String room) {
+		sink.tryEmitNext(room + "=Hello World");
 	}
 	
 	// data : 실제값 \n\n
